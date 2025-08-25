@@ -24,7 +24,9 @@ jobs:
         run: go mod tidy
 
       - name: Build binary
-        run: make build
+        run: |
+          VERSION=ci-build
+          go build -ldflags="-X main.version=$VERSION" -o bin/concat ./cmd/concat/main.go
 
       - name: Run tests
         run: make test

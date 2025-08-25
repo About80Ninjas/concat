@@ -1,5 +1,7 @@
 # Makefile
-.PHONY: help build run test clean
+.PHONY: help build run test clean docker-build
+
+VERSION ?= $(shell git describe --tags --always --dirty)
 
 help:
 	@echo "Available commands:"
@@ -9,16 +11,13 @@ help:
 	@echo "  make clean        - Clean build artifacts"
 
 build:
-	go build -o bin/concat ./cmd/concat/main.go
+	go build -ldflags="-X main.version=$(VERSION)" -o bin/concat ./cmd/concat/main.go
 
 run:
-	go run ./cmd/concat/main.go .
+	go run -ldflags="-X main.version=$(VERSION)" ./cmd/concat/main.go .
 
 test:
 	go test -v -cover ./...
 
 clean:
 	rm -rf bin/ data/
-
-docker-build:
-	docker build -t go_runner:latest .
