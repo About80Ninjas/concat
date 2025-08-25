@@ -1,9 +1,7 @@
----
-
-### 📘 New `README.md`
-
-````markdown
 # concat
+
+[![Go CI](https://github.com/your-username/concat/actions/workflows/test.yml/badge.svg)](https://github.com/your-username/concat/actions/workflows/test.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/your-username/concat)](https://goreportcard.com/report/github.com/your-username/concat)
 
 `concat` is a CLI tool to flatten a project directory into a single Markdown file.  
 This is useful for sharing multi-file projects with web-based AI assistants like ChatGPT.
@@ -14,6 +12,7 @@ This is useful for sharing multi-file projects with web-based AI assistants like
 - Generates a tree view of your directory
 - Concatenates all file contents into one Markdown file
 - Skips common junk files (`.git`, `.vscode`) by default
+- Glob filters (`--include`, `--exclude`) for fine control
 - Optionally include binary files as hex dumps
 - Verbose mode to show progress
 - Configurable output filename
@@ -22,78 +21,7 @@ This is useful for sharing multi-file projects with web-based AI assistants like
 
 ## Install
 ```bash
-git clone https://github.com/yourname/concat.git
+git clone https://github.com/your-username/concat.git
 cd concat
+go mod init github.com/your-username/concat
 make build
-````
-
-This will place the binary at `bin/concat`.
-
----
-
-## Usage
-
-```bash
-concat [options] <path>
-```
-
-### Options
-
-* `-o, --output <file>` : Specify output file (default: `{parentDir}_OVERVIEW.md`)
-* `--include-binaries` : Include binary files as hex dumps
-* `--all`              : Include all files (ignore nothing)
-* `--verbose`          : Show progress
-* `--version`          : Show version and exit
-* `-h, --help`         : Show help
-
----
-
-## Examples
-
-Concatenate current project:
-
-```bash
-concat .
-```
-
-Concatenate and include binary files:
-
-```bash
-concat --include-binaries .
-```
-
-Save output to a custom file:
-
-```bash
-concat -o project_OVERVIEW.md .
-```
-
-Verbose mode for large repos:
-
-```bash
-concat --all --verbose .
-```
-
----
-
-## Development
-
-Run tests:
-
-```bash
-make test
-```
-
-Clean build:
-
-```bash
-make clean
-```
-
-Docker build:
-
-```bash
-make docker-build
-```
-
----
