@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -94,5 +95,38 @@ func TestDefaultIncludeBehavior(t *testing.T) {
 
 	if !shouldIncludeByGlob(root, path) {
 		t.Errorf("expected %s to be included by default", path)
+	}
+}
+
+func TestVersionFlag(t *testing.T) {
+	// Save old args
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+
+	// Simulate running: concat --version
+	os.Args = []string{"concat", "--version"}
+
+	// Capture stdout
+	var buf strings.Builder
+	old := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	done := make(chan struct{})
+	go func() {
+		io.Copy(&buf, r)
+		close(done)
+	}()
+
+	// Run main()
+	main()
+
+	w.Close()
+	os.Stdout = old
+	<-done
+
+	output := buf.String()
+	if !strings.Contains(output, "concat version") {
+		t.Errorf("expected version output, got %q", output)
 	}
 }
