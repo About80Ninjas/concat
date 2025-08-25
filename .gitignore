@@ -1,0 +1,32 @@
+/data
+.env
+*_OVERVIEW.md
+
+# Binaries for programs and plugins
+*.exe
+*.darwin
+*.freebsd
+*.linux
+*.netbsd
+*.openbsd
+*.plan9
+*.windows
+
+# Test binary, built with `go test -c`
+*.test
+/bin
+
+# Output of the go toolchain
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+
+# IDE-specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
