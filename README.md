@@ -1,28 +1,154 @@
+-----
+
 # concat
 
-[![Go CI](https://github.com/about80ninjas/concat/actions/workflows/go.yml/badge.svg)](https://github.com/about80ninjas/concat/actions/workflows/go.yml)
+[](https://github.com/about80ninjas/concat/actions/workflows/go.yml)
+[](https://www.google.com/search?q=https://github.com/about80ninjas/concat/releases/latest)
 
+`concat` is a CLI tool to flatten a project directory into a single Markdown file. This is useful for sharing multi-file projects with web-based AI assistants like ChatGPT.
 
-
-`concat` is a CLI tool to flatten a project directory into a single Markdown file.  
-This is useful for sharing multi-file projects with web-based AI assistants like ChatGPT.
-
----
+-----
 
 ## Features
-- Generates a tree view of your directory
-- Concatenates all file contents into one Markdown file
-- Skips common junk files (`.git`, `.vscode`) by default
-- Glob filters (`--include`, `--exclude`) for fine control
-- Optionally include binary files as hex dumps
-- Verbose mode to show progress
-- Configurable output filename
 
----
+  - Generates a tree view of your directory.
+  - Concatenates all file contents into one Markdown file.
+  - Skips common junk files (`.git`, `.vscode`) by default.
+  - Glob filters (`--include`, `--exclude`) for fine control.
+  - Optionally include binary files as hex dumps.
+  - Verbose mode to show progress.
+  - Configurable output filename.
 
-## Install
+-----
+
+## Installation
+
+### From Pre-compiled Binaries
+
+You can download the latest pre-compiled binaries from the [releases page](https://www.google.com/search?q=https://github.com/about80ninjas/concat/releases/latest) or use the following `curl` commands for your platform.
+
+**Linux (amd64):**
+
 ```bash
-git clone https://github.com/your-username/concat.git
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-amd64 -o concat
+chmod +x concat
+sudo mv concat /usr/local/bin/
+```
+
+**Linux (arm64):**
+
+```bash
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-arm64 -o concat
+chmod +x concat
+sudo mv concat /usr/local/bin/
+```
+
+**macOS (amd64 - Intel):**
+
+```bash
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-amd64 -o concat
+chmod +x concat
+sudo mv concat /usr/local/bin/
+```
+
+**macOS (arm64 - Apple Silicon):**
+
+```bash
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-arm64 -o concat
+chmod +x concat
+sudo mv concat /usr/local/bin/
+```
+
+**Windows (amd64):**
+(Using PowerShell)
+
+```powershell
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-amd64.exe -o concat.exe
+# Move concat.exe to a directory in your PATH
+```
+
+**Windows (arm64):**
+(Using PowerShell)
+
+```powershell
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-arm64.exe -o concat.exe
+# Move concat.exe to a directory in your PATH
+```
+
+### From Source
+
+If you have Go installed, you can build `concat` from source.
+
+```bash
+git clone https://github.com/about80ninjas/concat.git
 cd concat
-go mod init github.com/your-username/concat
 make build
+# The binary will be at ./bin/concat
+```
+
+-----
+
+## Usage
+
+### Basic Usage
+
+To run `concat` on the current directory and generate an overview file:
+
+```bash
+concat .
+```
+
+This will create a file named `parentDir_OVERVIEW.md` in the current directory.
+
+### Options
+
+Here are the available command-line options:
+
+| Flag                 | Shorthand | Description                                           | Default                             |
+| -------------------- | --------- | ----------------------------------------------------- | ----------------------------------- |
+| `--output <file>`    | `-o`      | Specify the output file name.                         | `{parentDir}_OVERVIEW.md`           |
+| `--include-binaries` |           | Include binary files as hex dumps.                    | `false`                             |
+| `--all`              |           | Include all files, ignoring default ignore patterns.  | `false`                             |
+| `--include <globs>`  |           | Comma-separated glob patterns to include.             | `""` (all files)                    |
+| `--exclude <globs>`  |           | Comma-separated glob patterns to exclude.             | `""` (no exclusions)                |
+| `--verbose`          |           | Show progress while scanning.                         | `false`                             |
+| `--version`          |           | Show the version and exit.                            |                                     |
+| `--help`             | `-h`      | Show the help message.                                |                                     |
+
+### Examples
+
+**Specify an output file:**
+
+```bash
+concat -o project_overview.md .
+```
+
+**Include binary files:**
+
+```bash
+concat --include-binaries ./my_project
+```
+
+**Include only Go and Markdown files, excluding the `vendor` directory:**
+
+```bash
+concat --include "*.go,*.md" --exclude "vendor/*" .
+```
+
+**Include all files and show verbose output:**
+
+```bash
+concat --all --verbose --output overview.md .
+```
+
+-----
+
+## Contributing
+
+Contributions are welcome\! Please feel free to submit a pull request.
+
+-----
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
