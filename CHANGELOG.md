@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (Document changes in existing functionality here)
 
 ### Fixed
-- (Document bug fixes here)
+- TestVersionFlag now correctly handles 'dev' version string.
 
 ### Removed
 - (Document removals/deprecations here)
