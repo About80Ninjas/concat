@@ -41,7 +41,9 @@ jobs:
       - name: Build binary
         run: |
           mkdir -p dist
-          go build -o dist/concat-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/concat
+          VERSION=${GITHUB_REF#refs/tags/}
+          go build -ldflags="-X main.version=$VERSION" \
+            -o dist/concat-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/concat
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
