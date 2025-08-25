@@ -22,6 +22,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [v1.0.4] - 2025-08-25
+### Changed
+- Update CI/CD configuration.
+
+### Fixed
+- Fix Windows build error in release workflow.
+
+---
+
 ## [v1.0.3] - 2025-08-25
 ### Added
 - Version flag test (`--version`) to ensure version output is stable.
@@ -44,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/about80ninjas/concat/compare/v1.0.3...HEAD
+[Unreleased]: https://github.com/about80ninjas/concat/compare/v1.0.4...HEAD
+[v1.0.4]: https://github.com/about80ninjas/concat/releases/tag/v1.0.4
 [v1.0.3]: https://github.com/about80ninjas/concat/releases/tag/v1.0.3
 [v1.0.2-beta]: https://github.com/about80ninjas/concat/releases/tag/v1.0.2-beta
