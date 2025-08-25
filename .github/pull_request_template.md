@@ -11,6 +11,7 @@ Closes #
 - [ ] Code changes
 - [ ] Tests added/updated
 - [ ] Documentation updated
+- [ ] Changelog updated (`CHANGELOG.md` under [Unreleased])
 
 ### Details
 <!-- Provide details on what was implemented (e.g., updated Makefile, added flag, refactored function) -->
@@ -23,6 +24,7 @@ Before submitting, please confirm:
 - [ ] I ran `make test` and all tests passed.
 - [ ] I updated or added tests where needed.
 - [ ] I updated relevant documentation/help text if needed.
+- [ ] I updated **CHANGELOG.md** under `[Unreleased]` with this change.
 - [ ] I followed the **Implementation Order** from `TASKS.md`.
 
 ## Screenshots / Logs
