@@ -13,7 +13,7 @@
 -   Generates a tree view of your directory.
 -   Concatenates all file contents into one Markdown file.
 -   Skips common junk files (`.git`, `.vscode`) by default.
--   Glob filters (`--include`, `--exclude`) for fine control.
+-   Glob include/exclude support (see Options for details on current behavior).
 -   Optionally include binary files as hex dumps.
 -   Verbose mode to show progress.
 -   Configurable output filename.
@@ -29,7 +29,7 @@ You can download the latest pre-compiled binaries from the [releases page](https
 **Linux (amd64):**
 
 ```bash
-curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-amd64](https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-amd64) -o concat
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-amd64 -o concat
 chmod +x concat
 sudo mv concat /usr/local/bin/
 ````
@@ -37,7 +37,7 @@ sudo mv concat /usr/local/bin/
 **Linux (arm64):**
 
 ```bash
-curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-arm64](https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-arm64) -o concat
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-arm64 -o concat
 chmod +x concat
 sudo mv concat /usr/local/bin/
 ```
@@ -45,7 +45,7 @@ sudo mv concat /usr/local/bin/
 **macOS (amd64 - Intel):**
 
 ```bash
-curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-amd64](https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-amd64) -o concat
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-amd64 -o concat
 chmod +x concat
 sudo mv concat /usr/local/bin/
 ```
@@ -53,7 +53,7 @@ sudo mv concat /usr/local/bin/
 **macOS (arm64 - Apple Silicon):**
 
 ```bash
-curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-arm64](https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-arm64) -o concat
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-arm64 -o concat
 chmod +x concat
 sudo mv concat /usr/local/bin/
 ```
@@ -62,7 +62,7 @@ sudo mv concat /usr/local/bin/
 (Using PowerShell)
 
 ```powershell
-curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-amd64.exe](https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-amd64.exe) -o concat.exe
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-amd64.exe -o concat.exe
 # Move concat.exe to a directory in your PATH
 ```
 
@@ -70,16 +70,17 @@ curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat
 (Using PowerShell)
 
 ```powershell
-curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-arm64.exe](https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-arm64.exe) -o concat.exe
+curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-arm64.exe -o concat.exe
 # Move concat.exe to a directory in your PATH
 ```
 
 ### From Source
 
 If you have Go installed, you can build `concat` from source.
+Requires Go 1.24.6 or later.
 
 ```bash
-git clone [https://github.com/about80ninjas/concat.git](https://github.com/about80ninjas/concat.git)
+git clone https://github.com/about80ninjas/concat.git
 cd concat
 make build
 # The binary will be at ./bin/concat
@@ -108,8 +109,8 @@ Here are the available command-line options:
 | `--output <file>`    | `-o`      | Specify the output file name.                         | `{parentDir}_OVERVIEW.md`           |
 | `--include-binaries` |           | Include binary files as hex dumps.                    | `false`                             |
 | `--all`              |           | Include all files, ignoring default ignore patterns.  | `false`                             |
-| `--include <globs>`  |           | Comma-separated glob patterns to include.             | `""` (all files)                    |
-| `--exclude <globs>`  |           | Comma-separated glob patterns to exclude.             | `""` (no exclusions)                |
+| `--include <globs>`  |           | Comma-separated glob patterns to include (matches against file base name). | `""` (all files)                    |
+| `--exclude <globs>`  |           | Comma-separated glob patterns to exclude (matches against relative path). | `""` (no exclusions)                |
 | `--verbose`          |           | Show progress while scanning.                         | `false`                             |
 | `--version`          |           | Show the version and exit.                            |                                     |
 | `--help`             | `-h`      | Show the help message.                                |                                     |
@@ -151,6 +152,3 @@ Contributions are welcome\! Please feel free to submit a pull request.
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-```
-```
