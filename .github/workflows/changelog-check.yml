@@ -1,0 +1,22 @@
+name: Check CHANGELOG
+
+on:
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  check-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for CHANGELOG.md modification
+        run: |
+          if ! git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "CHANGELOG.md"; then
+            echo "Error: No update to CHANGELOG.md found."
+            echo "Please add a summary of your changes to the [Unreleased] section."
+            exit 1
+          fi
