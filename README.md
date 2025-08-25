@@ -1,44 +1,43 @@
------
 
 # concat
 
-[](https://github.com/about80ninjas/concat/actions/workflows/go.yml)
-[](https://www.google.com/search?q=https://github.com/about80ninjas/concat/releases/latest)
+[![Go CI](https://github.com/about80ninjas/concat/actions/workflows/go.yml/badge.svg)](https://github.com/about80ninjas/concat/actions/workflows/go.yml)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/about80ninjas/concat)](https://github.com/about80ninjas/concat/releases/latest)
 
 `concat` is a CLI tool to flatten a project directory into a single Markdown file. This is useful for sharing multi-file projects with web-based AI assistants like ChatGPT.
 
------
+---
 
 ## Features
 
-  - Generates a tree view of your directory.
-  - Concatenates all file contents into one Markdown file.
-  - Skips common junk files (`.git`, `.vscode`) by default.
-  - Glob filters (`--include`, `--exclude`) for fine control.
-  - Optionally include binary files as hex dumps.
-  - Verbose mode to show progress.
-  - Configurable output filename.
+-   Generates a tree view of your directory.
+-   Concatenates all file contents into one Markdown file.
+-   Skips common junk files (`.git`, `.vscode`) by default.
+-   Glob filters (`--include`, `--exclude`) for fine control.
+-   Optionally include binary files as hex dumps.
+-   Verbose mode to show progress.
+-   Configurable output filename.
 
------
+---
 
 ## Installation
 
 ### From Pre-compiled Binaries
 
-You can download the latest pre-compiled binaries from the [releases page](https://www.google.com/search?q=https://github.com/about80ninjas/concat/releases/latest) or use the following `curl` commands for your platform.
+You can download the latest pre-compiled binaries from the [releases page](https://github.com/about80ninjas/concat/releases/latest) or use the following `curl` commands for your platform.
 
 **Linux (amd64):**
 
 ```bash
-curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-amd64 -o concat
+curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-amd64](https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-amd64) -o concat
 chmod +x concat
 sudo mv concat /usr/local/bin/
-```
+````
 
 **Linux (arm64):**
 
 ```bash
-curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-arm64 -o concat
+curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-arm64](https://github.com/about80ninjas/concat/releases/latest/download/concat-linux-arm64) -o concat
 chmod +x concat
 sudo mv concat /usr/local/bin/
 ```
@@ -46,7 +45,7 @@ sudo mv concat /usr/local/bin/
 **macOS (amd64 - Intel):**
 
 ```bash
-curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-amd64 -o concat
+curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-amd64](https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-amd64) -o concat
 chmod +x concat
 sudo mv concat /usr/local/bin/
 ```
@@ -54,7 +53,7 @@ sudo mv concat /usr/local/bin/
 **macOS (arm64 - Apple Silicon):**
 
 ```bash
-curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-arm64 -o concat
+curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-arm64](https://github.com/about80ninjas/concat/releases/latest/download/concat-darwin-arm64) -o concat
 chmod +x concat
 sudo mv concat /usr/local/bin/
 ```
@@ -63,7 +62,7 @@ sudo mv concat /usr/local/bin/
 (Using PowerShell)
 
 ```powershell
-curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-amd64.exe -o concat.exe
+curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-amd64.exe](https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-amd64.exe) -o concat.exe
 # Move concat.exe to a directory in your PATH
 ```
 
@@ -71,7 +70,7 @@ curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-
 (Using PowerShell)
 
 ```powershell
-curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-arm64.exe -o concat.exe
+curl -L [https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-arm64.exe](https://github.com/about80ninjas/concat/releases/latest/download/concat-windows-arm64.exe) -o concat.exe
 # Move concat.exe to a directory in your PATH
 ```
 
@@ -80,7 +79,7 @@ curl -L https://github.com/about80ninjas/concat/releases/latest/download/concat-
 If you have Go installed, you can build `concat` from source.
 
 ```bash
-git clone https://github.com/about80ninjas/concat.git
+git clone [https://github.com/about80ninjas/concat.git](https://github.com/about80ninjas/concat.git)
 cd concat
 make build
 # The binary will be at ./bin/concat
@@ -152,3 +151,6 @@ Contributions are welcome\! Please feel free to submit a pull request.
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+```
+```
