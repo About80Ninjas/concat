@@ -39,10 +39,10 @@ jobs:
           go-version: "1.23"
 
       - name: Build binary
+        shell: bash
         run: |
           mkdir -p dist
-          VERSION=${GITHUB_REF#refs/tags/}
-          go build -ldflags="-X main.version=$VERSION" \
+          go build -ldflags="-X main.version=${GITHUB_REF_NAME}" \
             -o dist/concat-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/concat
 
       - name: Upload artifact
