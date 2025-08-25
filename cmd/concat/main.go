@@ -13,7 +13,7 @@ import (
 	"unicode/utf8"
 )
 
-var version = "1.1.0"
+var version = "v1.0.2-beta"
 
 // default ignore patterns (dirs & files)
 var defaultIgnores = []string{
