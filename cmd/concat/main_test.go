@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -126,7 +127,11 @@ func TestVersionFlag(t *testing.T) {
 	<-done
 
 	output := buf.String()
-	if !strings.Contains(output, "concat version") {
-		t.Errorf("expected version output, got %q", output)
+
+	// Updated regex pattern to match "concat version v0.0.0" format with optional pre-release suffixes
+	versionPattern := regexp.MustCompile(`concat version (?:v\d+\.\d+\.\d+(?:-[a-zA-Z0-9]+)*|dev)`)
+
+	if !versionPattern.MatchString(output) {
+		t.Errorf("expected version output to match pattern 'concat version v0.0.0' (with optional pre-release suffix), got %q", output)
 	}
 }
