@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"unicode/utf8"
@@ -25,6 +26,8 @@ var (
 	verbose      bool
 	includeGlobs []string
 	excludeGlobs []string
+	goal         string
+	withContext  bool
 )
 
 func logVerbose(msg string, args ...interface{}) {
@@ -77,6 +80,8 @@ func main() {
 	flag.BoolVar(&showVersion, "version", false, "show version and exit")
 	flag.StringVar(&includeStr, "include", "", "comma-separated glob patterns to include")
 	flag.StringVar(&excludeStr, "exclude", "", "comma-separated glob patterns to exclude")
+	flag.StringVar(&goal, "goal", "", "project goal to include in overview")
+	flag.BoolVar(&withContext, "with-context", false, "include git/build context")
 	flag.Usage = showHelp
 	flag.Parse()
 
@@ -116,6 +121,25 @@ func main() {
 		os.Exit(1)
 	}
 	defer out.Close()
+
+	// Project Summary & Goal
+	if goal != "" {
+		fmt.Fprintln(out, "# Project Summary & Goal")
+		fmt.Fprintf(out, "- **Goal:** %s", goal)
+		fmt.Fprintln(out, "- **Project:** concat, a CLI tool to flatten a project directory into a single Markdown file for AI assistants.")
+		fmt.Fprintln(out, "- **Language:** Go (version 1.24.6)")
+		fmt.Fprintln(out, "---")
+	}
+
+	// Project Context
+	if withContext {
+		fmt.Fprintln(out, "# Project Context")
+		runAndWrite(out, "## Git Status", "git", "status")
+		runAndWrite(out, "## Recent Commits", "git", "log", "-n", "3", "--oneline")
+		runAndWrite(out, "## Test Commands", "make", "test")
+		runAndWrite(out, "## Build Commands", "make", "build")
+		fmt.Fprintln(out, "---")
+	}
 
 	// 1. Directory Tree
 	fmt.Fprintln(out, "# Directory Structure")
@@ -166,6 +190,7 @@ func main() {
 					return nil // unreadable → skip
 				}
 
+				lang := detectLang(path)
 				fmt.Fprintf(out, "\n-----\nFile Path: %s\n\n", relPath)
 
 				if isBin {
@@ -178,9 +203,15 @@ func main() {
 						fmt.Fprintln(out, "[skipped binary file]")
 					}
 				} else {
+					if lang != "" {
+						fmt.Fprintf(out, "```%s\n", lang)
+					}
 					err = dumpText(out, path)
 					if err != nil {
 						return err
+					}
+					if lang != "" {
+						fmt.Fprintln(out, "```")
 					}
 				}
 
@@ -343,4 +374,40 @@ func dumpHex(out io.Writer, path string) error {
 		}
 	}
 	return writer.Flush()
+}
+
+// runAndWrite executes a shell command and writes output with a header
+func runAndWrite(out io.Writer, header string, cmd string, args ...string) {
+	fmt.Fprintln(out, header)
+	c := exec.Command(cmd, args...)
+	b, err := c.CombinedOutput()
+	if err != nil {
+		fmt.Fprintf(out, "(failed to run %s: %v)\n", cmd, err)
+	} else {
+		fmt.Fprintln(out, string(b))
+	}
+	fmt.Fprintln(out)
+}
+
+// detectLang returns a markdown code fence language based on file extension
+func detectLang(path string) string {
+	ext := strings.ToLower(filepath.Ext(path))
+	switch ext {
+	case ".go":
+		return "go"
+	case ".yml", ".yaml":
+		return "yaml"
+	case ".json":
+		return "json"
+	case ".md":
+		return "markdown"
+	case ".sh":
+		return "bash"
+	case ".ps1":
+		return "powershell"
+	case ".toml":
+		return "toml"
+	default:
+		return ""
+	}
 }
