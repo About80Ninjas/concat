@@ -49,6 +49,8 @@ Options:
   --include <globs>         Comma-separated glob patterns to include (e.g. "*.go,*.md")
   --exclude <globs>         Comma-separated glob patterns to exclude (e.g. "*.log,vendor/*")
   --verbose                 Show progress while scanning
+  --goal <text>             Add a "Project Summary & Goal" section at the top.
+  --with-context            Include git status, recent commits, and build context.
   --version                 Show version and exit
   -h, --help                Show this help message
 
