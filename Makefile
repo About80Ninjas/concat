@@ -21,3 +21,5 @@ test:
 
 clean:
 	rm -rf bin/ data/
+
+rebuild: clean build test
