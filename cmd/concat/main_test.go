@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"io"
 	"os"
 	"path/filepath"
@@ -99,10 +100,88 @@ func TestDefaultIncludeBehavior(t *testing.T) {
 	}
 }
 
+func TestGoalFlag(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+
+	// Reset flags
+	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+
+	tmpdir := t.TempDir()
+	outFile := filepath.Join(tmpdir, "out.md")
+
+	os.Args = []string{"concat", "--goal", "Test project goal", "-o", outFile, tmpdir}
+
+	main()
+
+	data, err := os.ReadFile(outFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	content := string(data)
+	if !strings.Contains(content, "Project Summary & Goal") {
+		t.Errorf("expected Project Summary & Goal section, got:\n%s", content)
+	}
+	if !strings.Contains(content, "Test project goal") {
+		t.Errorf("expected goal text in output, got:\n%s", content)
+	}
+}
+
+func TestWithContextFlag(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+
+	// Reset flags
+	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+
+	tmpdir := t.TempDir()
+	outFile := filepath.Join(tmpdir, "out.md")
+
+	// Run with --with-context (git/make may fail, but output should mention failure)
+	os.Args = []string{"concat", "--with-context", "-o", outFile, tmpdir}
+	main()
+
+	data, err := os.ReadFile(outFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	content := string(data)
+	if !strings.Contains(content, "Project Context") {
+		t.Errorf("expected Project Context section, got:\n%s", content)
+	}
+	// Ensure at least one subheader appears
+	if !strings.Contains(content, "## Git Status") {
+		t.Errorf("expected Git Status section, got:\n%s", content)
+	}
+}
+
+func TestDetectLang(t *testing.T) {
+	cases := map[string]string{
+		"file.go":   "go",
+		"config.yml": "yaml",
+		"config.yaml": "yaml",
+		"data.json": "json",
+		"readme.md": "markdown",
+		"script.sh": "bash",
+		"script.ps1": "powershell",
+		"config.toml": "toml",
+		"unknown.xyz": "",
+	}
+	for file, want := range cases {
+		got := detectLang(file)
+		if got != want {
+			t.Errorf("detectLang(%q) = %q, want %q", file, got, want)
+		}
+	}
+}
+
 func TestVersionFlag(t *testing.T) {
 	// Save old args
 	oldArgs := os.Args
 	defer func() { os.Args = oldArgs }()
+
+	// Reset flags
+	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 
 	// Simulate running: concat --version
 	os.Args = []string{"concat", "--version"}
