@@ -1,6 +1,7 @@
 /data
 .env
 *_OVERVIEW.md
+concat
 
 # Binaries for programs and plugins
 *.exe
