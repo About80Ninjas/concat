@@ -214,3 +214,159 @@ func TestVersionFlag(t *testing.T) {
 		t.Errorf("expected version output to match pattern 'concat version v0.0.0' (with optional pre-release suffix), got %q", output)
 	}
 }
+
+func TestDumpHex(t *testing.T) {
+	tmp := filepath.Join(os.TempDir(), "hexfile")
+	content := []byte{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10}
+	os.WriteFile(tmp, content, 0644)
+	defer os.Remove(tmp)
+
+	var sb strings.Builder
+	err := dumpHex(&sb, tmp)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// The hex.Dump function adds a newline, which we want to match.
+	expected := "00000000  01 02 03 04 05 06 07 08  09 0a 0b 0c 0d 0e 0f 10  |................|\n"
+	if sb.String() != expected {
+		t.Errorf("expected hex dump\n%q\ngot\n%q", expected, sb.String())
+	}
+}
+
+func TestPrintTree(t *testing.T) {
+	tmpdir := t.TempDir()
+	// Create structure:
+	// tmpdir/
+	// ├── a.txt
+	// └── b_dir/
+	//     └── c.txt
+	// Sorting of ReadDir is not guaranteed, but alphabetical is common.
+	// Using names that are unlikely to be mis-ordered.
+	os.WriteFile(filepath.Join(tmpdir, "a.txt"), []byte("a"), 0644)
+	os.Mkdir(filepath.Join(tmpdir, "b_dir"), 0755)
+	os.WriteFile(filepath.Join(tmpdir, "b_dir", "c.txt"), []byte("c"), 0644)
+
+	var sb strings.Builder
+	entries, err := os.ReadDir(tmpdir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var dirs, files int
+	// This test relies on a specific, common directory entry order.
+	for i, entry := range entries {
+		isLast := i == len(entries)-1
+		printTree(&sb, filepath.Join(tmpdir, entry.Name()), "", isLast, "", true, &dirs, &files)
+	}
+
+	// Note: This expected output assumes 'a.txt' comes before 'b_dir'.
+	expected := `├── a.txt
+└── b_dir
+    └── c.txt
+`
+	if sb.String() != expected {
+		t.Errorf("expected tree:\n%q\ngot:\n%q", expected, sb.String())
+	}
+	if dirs != 1 {
+		t.Errorf("expected 1 directory, got %d", dirs)
+	}
+	if files != 2 {
+		t.Errorf("expected 2 files, got %d", files)
+	}
+}
+
+func TestAllFlag(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+
+	tmpdir := t.TempDir()
+	outFile := filepath.Join(tmpdir, "out.md")
+
+	// Create a file that should be ignored by default
+	os.MkdirAll(filepath.Join(tmpdir, ".git"), 0755)
+	os.WriteFile(filepath.Join(tmpdir, ".git", "config"), []byte("git stuff"), 0644)
+	os.WriteFile(filepath.Join(tmpdir, "main.go"), []byte("go stuff"), 0644)
+
+	// Case 1: Run WITHOUT --all
+	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	os.Args = []string{"concat", "-o", outFile, tmpdir}
+	main()
+
+	data, err := os.ReadFile(outFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	content := string(data)
+	if strings.Contains(content, "File Path: .git/config") {
+		t.Errorf("--all=false: expected .git/config to be ignored, but it was included")
+	}
+	if !strings.Contains(content, "File Path: main.go") {
+		t.Errorf("--all=false: expected main.go to be included, but it was not")
+	}
+
+	// Case 2: Run WITH --all
+	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	os.Args = []string{"concat", "--all", "-o", outFile, tmpdir}
+	main()
+
+	data, err = os.ReadFile(outFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	content = string(data)
+	if !strings.Contains(content, "File Path: .git/config") {
+		t.Errorf("--all=true: expected .git/config to be included, but it was ignored")
+	}
+}
+
+func TestIncludeBinariesFlag(t *testing.T) {
+	oldArgs := os.Args
+	defer func() { os.Args = oldArgs }()
+
+	tmpdir := t.TempDir()
+	outFile := filepath.Join(tmpdir, "out.md")
+
+	// Create a text file and a binary file
+	binFilePath := filepath.Join(tmpdir, "binary.bin")
+	os.WriteFile(filepath.Join(tmpdir, "text.txt"), []byte("hello"), 0644)
+	os.WriteFile(binFilePath, []byte{0x00, 0x01, 0x02}, 0644)
+
+	// Case 1: Run WITHOUT --include-binaries
+	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	os.Args = []string{"concat", "-o", outFile, tmpdir}
+	main()
+
+	data, err := os.ReadFile(outFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	content := string(data)
+	relPath, _ := filepath.Rel(tmpdir, binFilePath)
+	if !strings.Contains(content, "File Path: "+relPath) {
+		t.Errorf("expected binary file path to be present in output, but it wasn't")
+	}
+	if !strings.Contains(content, "[skipped binary file]") {
+		t.Errorf("expected binary file to be skipped without the flag, but it wasn't")
+	}
+	if strings.Contains(content, "00000000") { // part of hex dump
+		t.Errorf("expected binary file to NOT be dumped as hex, but it was")
+	}
+
+	// Case 2: Run WITH --include-binaries
+	flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	os.Args = []string{"concat", "--include-binaries", "-o", outFile, tmpdir}
+	main()
+
+	data, err = os.ReadFile(outFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+	content = string(data)
+	if strings.Contains(content, "[skipped binary file]") {
+		t.Errorf("expected binary file to be included with the flag, but it was skipped")
+	}
+	if !strings.Contains(content, "00000000") { // part of hex dump
+		t.Errorf("expected binary file to be dumped as hex, but it wasn't")
+	}
+}
