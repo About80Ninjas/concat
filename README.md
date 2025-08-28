@@ -14,9 +14,12 @@
 -   Concatenates all file contents into one Markdown file.
 -   Skips common junk files (`.git`, `.vscode`) by default.
 -   Glob include/exclude support (see Options for details on current behavior).
--   Optionally include binary files as hex dumps.
--   Verbose mode to show progress.
--   Configurable output filename.
+-   Optionally include **project summary/goal** at the top of the overview.
+-   Optionally include **git + build context** to capture project state.
+-   Syntax highlighting in file content sections based on file extension.
+ -   Optionally include binary files as hex dumps.
+ -   Verbose mode to show progress.
+ -   Configurable output filename.
 
 ---
 
@@ -112,6 +115,8 @@ Here are the available command-line options:
 | `--include <globs>`  |           | Comma-separated glob patterns to include (matches against file base name). | `""` (all files)                    |
 | `--exclude <globs>`  |           | Comma-separated glob patterns to exclude (matches against relative path). | `""` (no exclusions)                |
 | `--verbose`          |           | Show progress while scanning.                         | `false`                             |
+| `--goal <text>`      |           | Add a "Project Summary & Goal" section at the top.    | `""` (disabled)                      |
+| `--with-context`     |           | Include git status, recent commits, and build context.| `false`                             |
 | `--version`          |           | Show the version and exit.                            |                                     |
 | `--help`             | `-h`      | Show the help message.                                |                                     |
 
@@ -139,6 +144,24 @@ concat --include "*.go,*.md" --exclude "vendor/*" .
 
 ```bash
 concat --all --verbose --output overview.md .
+```
+
+**Add a project goal at the top of the overview:**
+
+```bash
+concat --goal "Refactor file path normalization" .
+```
+
+**Include git status, recent commits, and build/test context:**
+
+```bash
+concat --with-context .
+```
+
+**Both goal and context together:**
+
+```bash
+concat --goal "Improve test coverage" --with-context .
 ```
 
 -----
